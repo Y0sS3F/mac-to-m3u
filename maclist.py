@@ -41,8 +41,14 @@ def get_base_url() -> str:
     parsed_url = urlparse(base_url_input)
     scheme = parsed_url.scheme or "http"
     host = parsed_url.hostname
-    port = parsed_url.port or 80
-    return f"{scheme}://{host}:{port}"
+    
+    # Use specified port, or default based on scheme
+    port = parsed_url.port or (443 if scheme == "https" else 80)
+    
+    # Include path if present, removing trailing slash to avoid double slashes later
+    path = parsed_url.path.rstrip("/")
+    
+    return f"{scheme}://{host}:{port}{path}"
 
 
 def get_mac_address() -> str:
