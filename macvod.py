@@ -55,17 +55,19 @@ def input_colored(prompt: str, color: str) -> str:
     return input(colored_prompt)
 
 def get_base_url() -> str:
-    """
-    Get the base URL from the user input.
-
-    Returns:
-        str: The base URL.
-    """
-    base_url: str = input_colored("Enter IPTV link: ", "cyan")
-    parsed_url = urlparse(base_url)
-    host: str = parsed_url.hostname or ""
-    port: Optional[int] = parsed_url.port or 80
-    return f"http://{host}:{port}"
+    """Gets base URL from user input and formats it correctly."""
+    base_url_input: str = input_colored("Enter IPTV link: ", "cyan")
+    parsed_url = urlparse(base_url_input)
+    scheme = parsed_url.scheme or "http"
+    host = parsed_url.hostname
+    
+    # Use specified port, or default based on scheme
+    port = parsed_url.port or (443 if scheme == "https" else 80)
+    
+    # Include path if present, removing trailing slash to avoid double slashes later
+    path = parsed_url.path.rstrip("/")
+    
+    return f"{scheme}://{host}:{port}{path}"
 
 def get_mac_address() -> str:
     """
